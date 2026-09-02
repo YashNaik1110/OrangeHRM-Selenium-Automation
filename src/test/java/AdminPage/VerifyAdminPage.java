@@ -130,7 +130,7 @@ public class VerifyAdminPage {
 
        soft.assertTrue(adminResult.isDisplayed(),"User with Admin role is not displayed");
        soft.assertAll();
-       System.out.println("TC_ADMIN_008 : PASSED");
+       System.out.println("TC_07 : PASSED");
    }
    @Test(priority = 7,enabled = true)
    public void TC_08(){
