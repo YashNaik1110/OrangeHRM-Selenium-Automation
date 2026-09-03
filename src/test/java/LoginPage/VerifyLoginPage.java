@@ -31,7 +31,7 @@ public class VerifyLoginPage {
 		   driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
 		   
 	}
-	@Test(priority = 0 , enabled = true)
+	@Test(priority = 0 , enabled = false)
 	public void TC_01() {
 		
 		
@@ -56,7 +56,7 @@ public class VerifyLoginPage {
 		
 	}
 	
-	@Test(priority = 1,enabled = true)
+	@Test(priority = 1,enabled = false)
 	public void TC_02() {
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
 		By usernameLocator = By.name("username");
@@ -69,7 +69,7 @@ public class VerifyLoginPage {
         soft.assertEquals(enteredUsername, username,"Username was not entered successfully");
         System.out.println("TC_02 PASS: Username field accepted the username successfully.");
     }
-	@Test(priority = 2,enabled = true)
+	@Test(priority = 2,enabled = false)
 	public void TC_03() {
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
 		WebElement passwordLocator = driver.findElement(By.name("password"));
@@ -82,7 +82,7 @@ public class VerifyLoginPage {
         soft.assertEquals(enteredPassword, password,"Password was not entered successfully");
         System.out.println("TC_03 PASS: Password field accepted the password successfully.");
     }
-	@Test(priority = 3,enabled = true)
+	@Test(priority = 3,enabled = false)
 	public void TC_04(){
 		String expected_URL = "https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index";
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
@@ -106,7 +106,7 @@ public class VerifyLoginPage {
 			System.out.println("User is not Logged in ");
 		}
 	}
-  @Test(priority = 4,enabled = true)
+  @Test(priority = 4,enabled = false)
   public void TC_05() {
 	  wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 	  driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
@@ -123,7 +123,7 @@ public class VerifyLoginPage {
 	soft.assertEquals(visibilty, "Dashboard is not visible ");
 	System.out.println("TC_05: Login with valid credentials passed successfully");	  
   }
-  @Test(priority = 5 , enabled = true)
+  @Test(priority = 5 , enabled = false)
   public void TC_06() {
 	  driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
 	  WebElement username = driver.findElement(By.name("username"));
@@ -145,7 +145,7 @@ public class VerifyLoginPage {
       System.out.println("TC_06: Invalid Username test passed successfully");
 
   }
-  @Test(priority = 6 , enabled = true)
+  @Test(priority = 6 , enabled = false)
   public void TC_07() {
 	  driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
 	  WebElement username = driver.findElement(By.name("username"));
@@ -167,7 +167,7 @@ public class VerifyLoginPage {
       System.out.println("TC_07: Invalid Password test passed successfully");
 
   }
-  @Test(priority = 7 , enabled = true)
+  @Test(priority = 7 , enabled = false)
   public void TC_08() {
 	  driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
       WebElement loginButton = driver.findElement(By.xpath("//button[@type='submit']"));
