@@ -289,7 +289,678 @@ public void TC_18() {
 	    soft.assertAll();
 	    System.out.println("TC_18 : PASSED");
 }
-   
+   @Test(priority = 18 , enabled = false)
+public void TC_19() throws InterruptedException {
+	login();
+    driver.findElement(By.xpath("//button[normalize-space()='Add']")).click();
+    Thread.sleep(2000);
+    driver.findElement(By.xpath("//button[normalize-space()='Save']")).click();
+    Thread.sleep(2000);
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    Thread.sleep(2000);
+    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[contains(@class,'oxd-input-field-error-message')]")));
+    Thread.sleep(2000);
+    List<WebElement> errorMessages = driver.findElements(By.xpath("//span[contains(@class,'oxd-input-field-error-message')]"));
+    Thread.sleep(2000);
+    soft.assertTrue(errorMessages.size() > 0,"Mandatory field validation messages are not displayed");
+    Thread.sleep(2000);
+    soft.assertAll();
+    System.out.println("Validation messages displayed: " + errorMessages.size());
+    System.out.println("TC_19 : PASSED");
+}
+@Test(priority = 19 , enabled = false)
+public void TC_20() {
+	login();
+    driver.findElement(By.xpath("//button[normalize-space()='Add']")).click();
+    List<WebElement> passwordFields = driver.findElements(By.xpath("//input[@type='password']"));
+    passwordFields.get(0).sendKeys("Yash@12345");
+    passwordFields.get(1).sendKeys("Yash@54321");
+    driver.findElement(By.xpath("//button[normalize-space()='Save']")).click();
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[text()='Passwords do not match']")));
+    soft.assertTrue(errorMessage.isDisplayed(),"Password mismatch validation is not displayed");
+    System.out.println("Password mismatch message: "+ errorMessage.getText());
+    System.out.println("TC_20: PASSED");
+}
+
+
+
+@Test(priority =20, enabled = false)
+public void TC_21() {
+ login();
+ driver.findElement(By.xpath("//span[text()='Admin']")).click();
+ driver.findElement(By.xpath("//button[normalize-space()='Add']")).click();
+ soft.assertTrue(driver.getCurrentUrl().contains("/admin/saveSystemUser"),"Add User page was not opened");
+ driver.findElement(By.xpath("//label[text()='Username']/following::input[1]")).sendKeys("TestUser123");
+ driver.findElement(By.xpath("//button[normalize-space()='Cancel']")).click();
+ soft.assertTrue( driver.getCurrentUrl().contains("/admin/viewSystemUsers"),"User was not returned to Admin page");
+ soft.assertAll();
+}
+
+@Test(priority = 21, enabled = false)
+public void TC_22() {
+    login();
+    WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(10));
+    WebElement username = wait.until(ExpectedConditions.visibilityOfElementLocated( By.xpath("//label[text()='Username']/following::input[1]")));
+    username.sendKeys("Admin");
+    WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[normalize-space()='Search']")));
+    searchButton.click();
+    WebElement edit = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//i[contains(@class,'bi-pencil-fill')]")));
+    edit.click();
+    soft.assertTrue(driver.getCurrentUrl().contains("admin/saveSystemUser/1"),"Edit User page was not opened");
+    WebElement editUsername = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[text()='Username']/following::input[1]")));
+    editUsername.click();
+    editUsername.sendKeys(Keys.CONTROL, "a");
+    editUsername.sendKeys(Keys.BACK_SPACE);
+    editUsername.sendKeys("YashNaik");
+    WebElement saveButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@type='submit']")));
+    saveButton.click();
+    wait.until(ExpectedConditions.urlContains("/admin/viewSystemUsers"));
+    soft.assertTrue(driver.getCurrentUrl().contains("/admin/viewSystemUsers"),"User was not returned to Admin User Management page");
+    soft.assertAll();
+}
+
+@Test(priority = 22, enabled = true)
+public void TC_23() {
+
+    login();
+
+    // --------------------------------------------------------
+    // Search user
+    // --------------------------------------------------------
+
+    WebElement username = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath(
+                            "//label[text()='Username']/following::input[1]"
+                    )
+            )
+    );
+
+    username.sendKeys("Mandas");
+
+    // --------------------------------------------------------
+    // Click Search
+    // --------------------------------------------------------
+
+    WebElement searchButton = wait.until(
+            ExpectedConditions.elementToBeClickable(
+                    By.xpath("//button[normalize-space()='Search']")
+            )
+    );
+
+    searchButton.click();
+
+    // --------------------------------------------------------
+    // Wait for first row
+    // --------------------------------------------------------
+
+    WebElement firstRow = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath(
+                            "(//div[@class='oxd-table-body']//div[@role='row'])[1]"
+                    )
+            )
+    );
+
+    soft.assertTrue(
+            firstRow.isDisplayed(),
+            "User record was not displayed"
+    );
+
+    // --------------------------------------------------------
+    // Select user checkbox
+    // --------------------------------------------------------
+
+    WebElement checkbox = wait.until(
+            ExpectedConditions.elementToBeClickable(
+                    By.xpath(
+                            "(//div[@class='oxd-table-body']//div[@role='row'])[1]"
+                                    + "//i[contains(@class,'oxd-checkbox-input-icon')]"
+                    )
+            )
+    );
+
+    checkbox.click();
+
+    // --------------------------------------------------------
+    // Click Delete Selected
+    // --------------------------------------------------------
+
+    WebElement deleteButton = wait.until(
+            ExpectedConditions.elementToBeClickable(
+                    By.xpath(
+                            "//button[normalize-space()='Delete Selected']"
+                    )
+            )
+    );
+
+    deleteButton.click();
+
+    // --------------------------------------------------------
+    // Verify confirmation popup
+    // --------------------------------------------------------
+
+    WebElement popup = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath(
+                            "//div[contains(@class,'oxd-dialog-container')]"
+                    )
+            )
+    );
+
+    soft.assertTrue(
+            popup.isDisplayed(),
+            "Delete confirmation popup was not displayed"
+    );
+
+    // --------------------------------------------------------
+    // Click Yes, Delete
+    // --------------------------------------------------------
+
+    WebElement yesDeleteButton = wait.until(
+            ExpectedConditions.elementToBeClickable(
+                    By.xpath(
+                            "//button[normalize-space()='Yes, Delete']"
+                    )
+            )
+    );
+
+    yesDeleteButton.click();
+
+    // --------------------------------------------------------
+    // Verify success message
+    // --------------------------------------------------------
+
+    WebElement message = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath(
+                            "//*[contains(normalize-space(),'Successfully Deleted')]"
+                    )
+            )
+    );
+
+    soft.assertTrue(
+            message.isDisplayed(),
+            "User was not deleted successfully"
+    );
+
+    soft.assertAll();
+}
+
+// ============================================================
+// TC_ADMIN_026
+// Verify Cancel Delete
+// ============================================================
+
+@Test(priority = 23, enabled = true)
+public void TC_24() {
+
+    login();
+
+    // --------------------------------------------------------
+    // Search user
+    // --------------------------------------------------------
+
+    WebElement username = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath(
+                            "//label[text()='Username']/following::input[1]"
+                    )
+            )
+    );
+
+    username.sendKeys("Admin");
+
+    // --------------------------------------------------------
+    // Click Search
+    // --------------------------------------------------------
+
+    WebElement searchButton = wait.until(
+            ExpectedConditions.elementToBeClickable(
+                    By.xpath("//button[normalize-space()='Search']")
+            )
+    );
+
+    searchButton.click();
+
+    // --------------------------------------------------------
+    // Select first user
+    // --------------------------------------------------------
+
+    WebElement checkbox = wait.until(
+            ExpectedConditions.elementToBeClickable(
+                    By.xpath(
+                            "(//div[@class='oxd-table-body']//div[@role='row'])[1]"
+                                    + "//i[contains(@class,'oxd-checkbox-input-icon')]"
+                    )
+            )
+    );
+
+    checkbox.click();
+
+    // --------------------------------------------------------
+    // Click Delete Selected
+    // --------------------------------------------------------
+
+    WebElement deleteButton = wait.until(
+            ExpectedConditions.elementToBeClickable(
+                    By.xpath(
+                            "//button[normalize-space()='Delete Selected']"
+                    )
+            )
+    );
+
+    deleteButton.click();
+
+    // --------------------------------------------------------
+    // Verify popup
+    // --------------------------------------------------------
+
+    WebElement popup = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath(
+                            "//div[contains(@class,'oxd-dialog-container')]"
+                    )
+            )
+    );
+
+    soft.assertTrue(
+            popup.isDisplayed(),
+            "Delete confirmation popup was not displayed"
+    );
+
+    // --------------------------------------------------------
+    // Click Cancel
+    // --------------------------------------------------------
+
+    WebElement cancelButton = wait.until(
+            ExpectedConditions.elementToBeClickable(
+                    By.xpath("//button[normalize-space()='Cancel']")
+            )
+    );
+
+    cancelButton.click();
+
+    // --------------------------------------------------------
+    // Verify popup closed
+    // --------------------------------------------------------
+
+    wait.until(
+            ExpectedConditions.invisibilityOfElementLocated(
+                    By.xpath(
+                            "//div[contains(@class,'oxd-dialog-container')]"
+                    )
+            )
+    );
+
+    boolean popupClosed = driver.findElements(
+            By.xpath(
+                    "//div[contains(@class,'oxd-dialog-container')]"
+            )
+    ).isEmpty();
+
+    soft.assertTrue(
+            popupClosed,
+            "Delete popup was not closed"
+    );
+
+    soft.assertAll();
+}
+
+// ============================================================
+// TC_ADMIN_027
+// Verify User Checkbox
+// ============================================================
+
+@Test(priority = 24, enabled = true)
+public void TC_25() {
+
+    login();
+
+
+    // --------------------------------------------------------
+    // Wait for first row
+    // --------------------------------------------------------
+
+    wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath(
+                            "(//div[@class='oxd-table-body']//div[@role='row'])[1]"
+                    )
+            )
+    );
+
+    // --------------------------------------------------------
+    // Click checkbox
+    // --------------------------------------------------------
+
+    WebElement checkbox = wait.until(
+            ExpectedConditions.elementToBeClickable(
+                    By.xpath(
+                            "(//div[@class='oxd-table-body']//div[@role='row'])[1]"
+                                    + "//i[contains(@class,'oxd-checkbox-input-icon')]"
+                    )
+            )
+    );
+
+    checkbox.click();
+
+    // --------------------------------------------------------
+    // Verify checkbox
+    // --------------------------------------------------------
+
+    WebElement checkboxInput = wait.until(
+            ExpectedConditions.presenceOfElementLocated(
+                    By.xpath(
+                            "(//div[@class='oxd-table-body']//div[@role='row'])[1]"
+                                    + "//input[@type='checkbox']"
+                    )
+            )
+    );
+
+    soft.assertTrue(
+            checkboxInput.isSelected(),
+            "User checkbox was not selected"
+    );
+
+    soft.assertAll();
+}
+
+// ============================================================
+// TC_ADMIN_028
+// Verify Select All Checkbox
+// ============================================================
+
+@Test(priority = 25, enabled = true)
+public void TC_26() {
+
+    login();
+
+    // --------------------------------------------------------
+    // Wait for table header
+    // --------------------------------------------------------
+
+    wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath(
+                            "//div[contains(@class,'oxd-table-header')]"
+                    )
+            )
+    );
+
+    // --------------------------------------------------------
+    // Click Select All checkbox
+    // --------------------------------------------------------
+
+    WebElement selectAll = wait.until(
+            ExpectedConditions.elementToBeClickable(
+                    By.xpath(
+                            "//div[contains(@class,'oxd-table-header')]"
+                                    + "//i[contains(@class,'oxd-checkbox-input-icon')]"
+                    )
+            )
+    );
+
+    selectAll.click();
+
+    // --------------------------------------------------------
+    // Verify Select All checkbox
+    // --------------------------------------------------------
+
+    WebElement selectAllInput = wait.until(
+            ExpectedConditions.presenceOfElementLocated(
+                    By.xpath(
+                            "//div[contains(@class,'oxd-table-header')]"
+                                    + "//input[@type='checkbox']"
+                    )
+            )
+    );
+
+    soft.assertTrue(
+            selectAllInput.isSelected(),
+            "Select All checkbox was not selected"
+    );
+
+    soft.assertAll();
+}
+
+// ============================================================
+// TC_ADMIN_029
+// Verify Pagination
+// ============================================================
+
+@Test(priority = 26, enabled = true)
+public void TC_27() {
+
+    login();
+
+    // --------------------------------------------------------
+    // Wait for first row
+    // --------------------------------------------------------
+
+    WebElement firstRow = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath(
+                            "(//div[@class='oxd-table-body']//div[@role='row'])[1]"
+                    )
+            )
+    );
+
+    String beforePage = firstRow.getText();
+
+    System.out.println(
+            "First page first row: " + beforePage
+    );
+
+    // --------------------------------------------------------
+    // Find Next button
+    // --------------------------------------------------------
+
+    WebElement nextButton = wait.until(
+            ExpectedConditions.presenceOfElementLocated(
+                    By.xpath(
+                            "//button[@aria-label='Next']"
+                    )
+            )
+    );
+
+    // --------------------------------------------------------
+    // Check whether Next is enabled
+    // --------------------------------------------------------
+
+    if (!nextButton.isEnabled()) {
+
+        System.out.println(
+                "Next page is not available."
+        );
+
+        return;
+    }
+
+    // --------------------------------------------------------
+    // Click Next
+    // --------------------------------------------------------
+
+    nextButton.click();
+
+    // --------------------------------------------------------
+    // Wait for first row to change
+    // --------------------------------------------------------
+
+    wait.until(
+            ExpectedConditions.not(
+                    ExpectedConditions.textToBe(
+                            By.xpath(
+                                    "(//div[@class='oxd-table-body']//div[@role='row'])[1]"
+                            ),
+                            beforePage
+                    )
+            )
+    );
+
+    // --------------------------------------------------------
+    // Get first row after next page
+    // --------------------------------------------------------
+
+    String afterPage = driver.findElement(
+            By.xpath(
+                    "(//div[@class='oxd-table-body']//div[@role='row'])[1]"
+            )
+    ).getText();
+
+    System.out.println(
+            "Second page first row: " + afterPage
+    );
+
+    // --------------------------------------------------------
+    // Verify different page
+    // --------------------------------------------------------
+
+    soft.assertNotEquals(
+            beforePage,
+            afterPage,
+            "Next page was not displayed"
+    );
+
+    soft.assertAll();
+}
+
+// ============================================================
+// TC_ADMIN_030
+// Verify Records Per Page
+// ============================================================
+
+@Test(priority = 27, enabled = true)
+public void TC_28() {
+
+    login();
+
+
+    // --------------------------------------------------------
+    // Find dropdowns
+    // --------------------------------------------------------
+
+    List<WebElement> dropdowns = driver.findElements(
+            By.xpath(
+                    "//div[contains(@class,'oxd-select-text')]"
+            )
+    );
+
+    // --------------------------------------------------------
+    // Check dropdown availability
+    // --------------------------------------------------------
+
+    if (dropdowns.isEmpty()) {
+
+        System.out.println(
+                "Records per page option is not available "
+                        + "in current OrangeHRM version."
+        );
+
+        return;
+    }
+
+    // --------------------------------------------------------
+    // Click dropdown
+    // --------------------------------------------------------
+
+    WebElement recordsDropdown = wait.until(
+            ExpectedConditions.elementToBeClickable(
+                    By.xpath(
+                            "(//div[contains(@class,'oxd-select-text')])[1]"
+                    )
+            )
+    );
+
+    recordsDropdown.click();
+
+    // --------------------------------------------------------
+    // Wait for options
+    // --------------------------------------------------------
+
+    List<WebElement> options = wait.until(
+            ExpectedConditions.visibilityOfAllElementsLocatedBy(
+                    By.xpath("//div[@role='option']")
+            )
+    );
+
+    boolean option20Found = false;
+
+    // --------------------------------------------------------
+    // Find 20 option
+    // --------------------------------------------------------
+
+    for (WebElement option : options) {
+
+        String optionText = option.getText().trim();
+
+        System.out.println(
+                "Available option: " + optionText
+        );
+
+        if (optionText.equals("20")) {
+
+            option.click();
+
+            option20Found = true;
+
+            break;
+        }
+    }
+
+    // --------------------------------------------------------
+    // Verify 20 option
+    // --------------------------------------------------------
+
+    if (!option20Found) {
+
+        System.out.println(
+                "20 records option is not available "
+                        + "in current OrangeHRM version."
+        );
+
+        return;
+    }
+
+    // --------------------------------------------------------
+    // Wait for table
+    // --------------------------------------------------------
+
+    wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath(
+                            "//div[@class='oxd-table-body']//div[@role='row']"
+                    )
+            )
+    );
+
+    // --------------------------------------------------------
+    // Count rows
+    // --------------------------------------------------------
+
+    int rowCount = driver.findElements(
+            By.xpath(
+                    "//div[@class='oxd-table-body']//div[@role='row']"
+            )
+    ).size();
+
+    System.out.println(
+            "Number of records displayed: " + rowCount
+    );
+
+    // --------------------------------------------------------
+    // Verify records
+    // --------------------------------------------------------
+
+    soft.assertTrue(
+            rowCount <= 20,
+            "Records per page was not changed correctly"
+    );
+
+    soft.assertAll();
+}
+
   @AfterMethod
   public void tear() {
 	  driver.quit();
